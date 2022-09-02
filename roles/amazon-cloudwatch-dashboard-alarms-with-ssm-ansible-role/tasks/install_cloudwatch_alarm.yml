@@ -1,0 +1,14 @@
+- include_tasks: create_cloudwatch_alarm.yml
+  with_dict: "{{Cloudwatch_Alarms_Warn}}"
+  vars:
+    severity: "Warning"
+    alarm_actions: "{{warn_sns_topic_arn}}"
+
+
+- include_tasks: create_cloudwatch_alarm.yml
+  with_dict: "{{Cloudwatch_Alarms_Critical}}"
+  vars:
+    severity: "Critical"
+    alarm_actions: "{{critical_sns_topic_arn}}"
+
+

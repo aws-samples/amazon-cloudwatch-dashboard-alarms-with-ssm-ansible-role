@@ -1,0 +1,9 @@
+---
+# tasks file for amazon-cloudwatch-dashboard-alarms-with-ssm-ansible-role
+- name: "Create cloudwatch monitoring alarms and dashboard"
+  become: true
+  block:
+    - include_tasks:  "install_prereqs.yml"
+    - include_tasks:  "install_cloudwatch_agent.yml"
+    - include_tasks:  "create_cloudwatch_dashboard.yml"
+    - include_tasks:  "install_cloudwatch_alarm.yml"

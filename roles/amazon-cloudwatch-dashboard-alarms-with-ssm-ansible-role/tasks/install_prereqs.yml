@@ -1,0 +1,103 @@
+- name: Install a list of packages 
+  become: true
+  ansible.builtin.yum:
+    name:
+      - wget
+      - curl
+      - unzip
+      - python3
+    state: present
+  ignore_errors: yes
+
+- name: Install a list of packages 
+  become: true
+  ansible.builtin.dnf:
+    name:
+      - wget
+      - curl
+      - unzip
+      - python3
+    state: present
+  ignore_errors: yes
+
+- name: Install pip3 on EC2
+  shell: yum install python3-pip -y
+  ignore_errors: yes
+  
+- name: Upgrade pip2
+  shell: python3 -m pip install --upgrade pip
+  ignore_errors: yes
+  
+  
+- name: Install boto3 and botocore
+  shell: pip3 install boto boto3 botocore
+  ignore_errors: yes
+
+- name: Install awscli on EC2
+  shell: pip3 install awscli --upgrade
+  ignore_errors: yes
+
+- name: Install amazon.aws collection in ansible
+  shell: ansible-galaxy collection install amazon.aws --force
+  
+- name: Install amazon.aws collection in ansible
+  shell: ansible-galaxy collection install community.aws --force
+  
+- name: Get Instance ID
+  shell: |
+    wget -q -O - http://169.254.169.254/latest/meta-data/instance-id
+  register: get_instance_id
+  
+- set_fact:
+    instance_id: "{{get_instance_id.stdout}}"
+  
+- name: Get Region of Instance
+  shell: |
+    wget -q -O - http://169.254.169.254/latest/meta-data/placement/availability-zone | sed -e 's:\([0-9][0-9]*\)[a-z]*$:\1:'
+  register: get_aws_region
+  
+- set_fact:
+    aws_region: "{{get_aws_region.stdout}}"
+    
+- name: Get Hostname
+  shell: |
+    wget -q -O - http://169.254.169.254/latest/meta-data/hostname
+  register: get_hostname
+  
+  
+- set_fact:
+    inventory_hostname: "{{get_hostname.stdout}}"
+    
+- name: Get AMI of Instance
+  shell: |
+    wget -q -O - http://169.254.169.254/latest/meta-data/ami-id
+  register: get_ami
+  
+- set_fact:
+    ami: "{{get_ami.stdout}}"
+    
+- name: Get Instance Type of Instance
+  shell: |
+    wget -q -O - http://169.254.169.254/latest/meta-data/instance-type
+  register: get_instance_type
+  
+  
+- set_fact:
+    instance_type: "{{get_instance_type.stdout}}"
+    
+   
+- name: get account_id
+  shell: |
+    curl -s http://169.254.169.254/latest/dynamic/instance-identity/document |grep -i accountid|awk '{print $NF}' |sed 's/"//g;s/,//g'
+  register: get_account_id
+  
+  
+- set_fact:
+    account_number: "{{get_account_id.stdout}}"
+    
+
+- set_fact: 
+    critical_sns_topic_arn: "arn:aws:sns:{{aws_region}}:{{account_number}}:{{critical_sns_topic_name}}"
+    
+- set_fact: 
+    warn_sns_topic_arn: "arn:aws:sns:{{aws_region}}:{{account_number}}:{{warn_sns_topic_name}}"    

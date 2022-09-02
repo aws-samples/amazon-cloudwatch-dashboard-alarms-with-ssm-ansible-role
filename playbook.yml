@@ -1,0 +1,9 @@
+---
+  - hosts: all
+    become: true
+
+    tasks:
+
+      - name: "Install the Cloudwatch  Monitoring"
+        include_role:
+          name: ./roles/amazon-cloudwatch-dashboard-alarms-with-ssm-ansible-role

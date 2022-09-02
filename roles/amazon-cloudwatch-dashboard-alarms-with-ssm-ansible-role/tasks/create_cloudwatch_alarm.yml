@@ -1,0 +1,64 @@
+- name: Create cloudwatch metric alarm for {{item.key}}
+  community.aws.ec2_metric_alarm:
+    region: "{{aws_region}}"
+    comparison: "{{item.value.comparison_operator}}"
+    description: "Alarm when {{item.value.metric_name}} exceeds {{item.value.threshold}} for {{item.value.eval_period}} times"
+    name: "Alarm-{{severity}}-{{item.value.metric_name}}-{{instance_id}}"
+    metric: "{{item.value.metric_name}}"
+    namespace: "{{item.value.namespace}}"
+    period: "{{item.value.period}}"
+    statistic: "{{item.value.statistic}}"
+    threshold: "{{item.value.threshold}}"
+    alarm_actions: "{{alarm_actions}}"
+    evaluation_periods: "{{item.value.eval_period}}"
+    dimensions: "{'InstanceId':'{{ instance_id }}'}"
+  when: ((item.value.unit is not defined) and (item.key != 'DiskUtilization'))
+
+- name: Create cloudwatch metric alarm for {{item.key}}
+  community.aws.ec2_metric_alarm:
+    region: "{{aws_region}}"
+    comparison: "{{item.value.comparison_operator}}"
+    description: "Alarm when {{item.value.metric_name}} exceeds {{item.value.threshold}} for {{item.value.eval_period}} times"
+    name: "Alarm-{{severity}}-{{item.value.metric_name}}-{{instance_id}}"
+    metric: "{{item.value.metric_name}}"
+    namespace: "{{item.value.namespace}}"
+    period: "{{item.value.period}}"
+    unit: "{{item.value.unit}}"
+    statistic: "{{item.value.statistic}}"
+    threshold: "{{item.value.threshold}}"
+    alarm_actions: "{{alarm_actions}}"
+    evaluation_periods: "{{item.value.eval_period}}"
+    dimensions: "{'InstanceId':'{{ instance_id }}'}"
+  when: ((item.value.unit is defined) and (item.key != 'DiskUtilization'))
+
+- name: create disk dimensions dictionary for {{item.key}}
+  when: (item.key == 'DiskUtilization')
+  shell: |
+    LANG=UTF-8 lsblk |grep -w "{{my_disk.value.mountlocation}}"|sed "s/\`//g;s/-//g"|awk '{print $1}'
+  with_dict: "{{item.value.mountpoint}}"
+  loop_control:
+    loop_var: my_disk
+  register: mapping_disks_output
+
+- debug: var=mapping_disks_output.results|map(attribute='stdout')
+  when: (item.key == 'DiskUtilization')
+
+- name: Create cloudwatch metric alarm for {{item.key}}
+  community.aws.ec2_metric_alarm:
+    region: "{{aws_region}}"
+    comparison: "{{item.value.comparison_operator}}"
+    description: "Alarm when {{item.value.metric_name}} exceeds {{item.value.threshold}} for {{item.value.eval_period}} times"
+    name: "Alarm-{{severity}}-{{item.value.metric_name}}-{{i.my_disk.value.mountlocation}}-{{instance_id}}"
+    metric: "{{item.value.metric_name}}"
+    namespace: "{{item.value.namespace}}"
+    period: "{{item.value.period}}"
+    statistic: "{{item.value.statistic}}"
+    threshold: "{{item.value.threshold}}"
+    evaluation_periods: "{{item.value.eval_period}}"
+    alarm_actions: "{{alarm_actions}}"
+    dimensions: "{ 'path' : '{{i.my_disk.value.mountlocation}}', 'device' :'{{i.stdout}}', 'fstype' : '{{i.my_disk.value.fstype}}', 'ImageId': '{{ami}}', 'InstanceType': '{{instance_type}}', 'InstanceId': '{{instance_id}}' }"
+  when: (item.key == 'DiskUtilization')
+  with_items: "{{mapping_disks_output.results}}"
+  loop_control:
+    loop_var: i
+  ignore_errors: yes

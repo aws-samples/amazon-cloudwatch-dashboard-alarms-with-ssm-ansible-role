@@ -1,0 +1,11 @@
+
+- name: Copy template file to host {{inventory_hostname}}
+  template: src="./files/create_dashboard_template.sh" dest="/tmp/create_dashboard_template.sh" force=yes
+
+- name: Execute shell script /tmp/create_dashboard_template.sh to create dashboard template
+  shell: |
+    chmod 777  /tmp/create_dashboard_template.sh
+    sh  /tmp/create_dashboard_template.sh
+
+- name: Create cloudwatch dashboard for {{inventory_hostname}}
+  shell: /usr/local/bin/aws cloudwatch put-dashboard --region "{{aws_region}}" --dashboard-name "{{instance_id}}-Monitoring" --dashboard-body "`cat /tmp/cloudwatch_dashboard_template.json`"

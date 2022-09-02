@@ -1,0 +1,109 @@
+{
+    "agent": {
+            "metrics_collection_interval": 60,
+            "run_as_user": "root"
+    },
+    "logs": {
+            "logs_collected": {
+                    "files": {
+                            "collect_list": [
+                                    {
+                                            "file_path": "/home/ec2-user/",
+                                            "log_group_name": "ec2-user",
+                                            "log_stream_name": "{instance_id}",
+                                            "retention_in_days": -1
+                                    }
+                            ]
+                    }
+            }
+    },
+    "metrics": {
+            "aggregation_dimensions": [
+                    [
+                            "InstanceId"
+                    ]
+            ],
+            "append_dimensions": {
+                    "AutoScalingGroupName": "${aws:AutoScalingGroupName}",
+                    "ImageId": "${aws:ImageId}",
+                    "InstanceId": "${aws:InstanceId}",
+"InstanceType": "${aws:InstanceType}"
+            },
+            "metrics_collected": {
+                    "cpu": {
+                            "measurement": [
+                                    "cpu_usage_idle",
+                                    "cpu_usage_iowait",
+                                    "cpu_usage_user",
+                                    "cpu_usage_system"
+                            ],
+                            "metrics_collection_interval": 60,
+                            "resources": [
+                                    "*"
+                            ],
+                            "totalcpu": false
+                    },
+                    "disk": {
+                            "measurement": [
+                                    "used_percent",
+                                    "inodes_free",
+                                     "disk_used",
+                                     "disk_total",
+                                      "disk_used_percent",
+                                     "disk_free"
+                            ],
+                            "metrics_collection_interval": 60,
+                            "resources": [
+                                    "*"
+]
+                    },
+                    "diskio": {
+                            "measurement": [
+                                    "io_time"
+                            ],
+                            "metrics_collection_interval": 60,
+                            "resources": [
+                                    "*"
+                            ]
+                    },
+                    "mem": {
+                            "measurement": [
+                                    "mem_used_percent",
+                                     "mem_free",
+                                     "mem_cached",
+                                     "mem_total",
+                                     "mem_used",
+                                      "mem_available"
+                            ],
+                            "metrics_collection_interval": 60
+                    },
+                    "statsd": {
+                            "metrics_aggregation_interval": 60,
+                            "metrics_collection_interval": 10,
+                            "service_address": ":8125"
+                    },
+"swap": {
+                            "measurement": [
+                                    "swap_used_percent",
+                                    "swap_free",
+                                     "swap_used"
+                            ],
+                            "metrics_collection_interval": 60
+                    },
+  "ethtool": {
+    "interface_include": [
+      "eth0"
+    ],
+    "metrics_include": [
+      "rx_packets",
+      "tx_packets",
+      "bw_in_allowance_exceeded",
+      "bw_out_allowance_exceeded",
+      "conntrack_allowance_exceeded",
+      "linklocal_allowance_exceeded",
+      "pps_allowance_exceeded"
+     ]
+  }
+            }
+  }
+}

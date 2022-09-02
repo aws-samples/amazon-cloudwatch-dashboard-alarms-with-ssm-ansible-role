@@ -1,0 +1,105 @@
+---
+# vars file for amazon-cloudwatch-dashboard-alarms-with-ssm-ansible-role
+
+Cloudwatch_Alarms_Warn:
+  CPUUtilization:
+    metric_name: "CPUUtilization"
+    namespace: "AWS/EC2"
+    statistic: "Average"
+    period: 300
+    eval_period: 3
+    datapoints: 3
+    threshold: 80
+    comparison_operator: "GreaterThanThreshold"
+  SwapUtilization:
+    metric_name: "swap_used_percent"
+    namespace: "CWAgent"
+    statistic: "Average"
+    period: 300
+    eval_period: 3
+    datapoints: 3
+    threshold: 30
+    comparison_operator: "GreaterThanThreshold"
+  MemoryUtilization:
+    metric_name: "mem_used_percent"
+    namespace: "CWAgent"
+    statistic: "Average"
+    period: 300
+    eval_period: 3
+    datapoints: 3
+    threshold: 90
+    comparison_operator: "GreaterThanThreshold"
+  DiskUtilization:
+    metric_name: "disk_used_percent"
+    namespace: "CWAgent"
+    statistic: "Average"
+    period: 60
+    eval_period: 2
+    datapoints: 2
+    threshold: 90
+    comparison_operator: "GreaterThanThreshold"
+    mountpoint:
+      u021:
+        mountlocation: /u021
+        fstype: ext4
+      root:
+        mountlocation: /
+        fstype: xfs
+
+
+Cloudwatch_Alarms_Critical:
+  CPUUtilization:
+    metric_name: "CPUUtilization"
+    namespace: "AWS/EC2"
+    statistic: "Average"
+    period: 300
+    eval_period: 3
+    datapoints: 3
+    threshold: 90
+    comparison_operator: "GreaterThanThreshold"
+  SwapUtilization:
+    metric_name: "swap_used_percent"
+    namespace: "CWAgent"
+    statistic: "Average"
+    period: 300
+    eval_period: 3
+    datapoints: 3
+    threshold: 50
+    comparison_operator: "GreaterThanThreshold"
+  MemoryUtilization:
+    metric_name: "mem_used_percent"
+    namespace: "CWAgent"
+    statistic: "Average"
+    period: 300
+    eval_period: 3
+    datapoints: 3
+    threshold: 100
+    comparison_operator: "GreaterThanThreshold"
+  StatusCheckFailed:
+    metric_name: "StatusCheckFailed"
+    namespace: "AWS/EC2"
+    statistic: "Maximum"
+    unit: "Count"
+    period: 60
+    eval_period: 2
+    datapoints: 2
+    threshold: 100
+    comparison_operator: "GreaterThanOrEqualToThreshold"
+  DiskUtilization:
+    metric_name: "disk_used_percent"
+    namespace: "CWAgent"
+    statistic: "Average"
+    period: 60
+    eval_period: 2
+    datapoints: 2
+    threshold: 95
+    comparison_operator: "GreaterThanThreshold"
+    mountpoint:
+      u021:
+        mountlocation: /u021
+        fstype: ext4
+      root:
+        mountlocation: /
+        fstype: xfs
+
+

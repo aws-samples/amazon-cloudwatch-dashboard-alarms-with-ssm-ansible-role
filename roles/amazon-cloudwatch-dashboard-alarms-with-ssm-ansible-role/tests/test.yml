@@ -1,0 +1,5 @@
+---
+- hosts: localhost
+  remote_user: root
+  roles:
+    - amazon-cloudwatch-dashboard-alarms-with-ssm-ansible-role
