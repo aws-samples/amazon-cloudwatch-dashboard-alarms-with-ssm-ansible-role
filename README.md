@@ -1,11 +1,8 @@
 ## My Project
 
-TODO: Fill this README out!
+This repository is used to create the cloudwatch agent on the ec2 servers, create alarms for metrics like CPU utilization, Memory Utilization, Disk Utilization etc. and also used for creating the dashboard per instance for monitoring.
 
-Be sure to:
-
-* Change the title in this README
-* Edit your repository description on GitHub
+More details on the deployment and use of code in blog https://aws-blogs-prod.amazon.com/mt/automate-creation-of-amazon-cloudwatch-alarms-and-dashboards-with-aws-systems-manager-and-ansible
 
 ## Security
 
